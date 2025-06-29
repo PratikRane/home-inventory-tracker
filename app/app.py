@@ -36,5 +36,15 @@ def add_item():
     conn.close()
     return redirect('/')
 
+@app.route('/delete/<int:item_id>', methods=['POST'])
+def delete_item(item_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM item WHERE id = %s", (item_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return redirect('/')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
