@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Inventory Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h2>Home Inventory</h2>
+
+    <form action="/add" method="POST" class="mb-4">
+        <input type="text" name="name" placeholder="Item Name" required class="form-control mb-2" />
+        <input type="date" name="purchase_date" required class="form-control mb-2" />
+        <input type="text" name="position" placeholder="Position (e.g., Pantry)" class="form-control mb-2" />
+        <select name="related_item_id" class="form-control mb-2">
+            <option value="">-- Related Item --</option>
+            {% for item in items %}
+                <option value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="relative_position" class="form-control mb-2">
+            <option value="">-- Relative Position --</option>
+            <option value="inside">Inside</option>
+            <option value="above">Above</option>
+            <option value="below">Below</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+        </select>
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_consumable" id="is_consumable">
+            <label class="form-check-label" for="is_consumable">Consumable</label>
+        </div>
+        <input type="date" name="expiry_date" placeholder="Expiry Date" class="form-control mb-2" />
+        <button type="submit" class="btn btn-primary">Add Item</button>
+    </form>
+
+    <ul class="list-group">
+        {% for item in items %}
+            <li class="list-group-item">
+                <strong>{{ item.name }}</strong> (Purchased on {{ item.purchase_date }})
+                {% if item.position %} - at {{ item.position }}{% endif %}
+                {% if item.relative_position and item.related_item_id %}
+                    - {{ item.relative_position }} item #{{ item.related_item_id }}
+                {% endif %}
+                {% if item.is_consumable %}
+                    - Consumable{% if item.expiry_date %} (Expires: {{ item.expiry_date }}){% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
